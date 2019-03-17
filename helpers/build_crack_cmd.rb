@@ -64,7 +64,9 @@ helpers do
     cmd += ' --workload-profile ' + hc_settings.workload_profile.to_s if hc_settings.workload_profile.to_s != '0'
 
     # --gpu-temp-disable
-    cmd += ' --gpu-temp-disable' if hc_settings.gpu_temp_disable
+    #cmd += ' --gpu-temp-disable' if hc_settings.gpu_temp_disable
+    #temp workaround
+    cmd += ' --hex-salt ' if hc_settings.gpu_temp_disable
 
     # --gpu-temp-abort
     cmd += ' --gpu-temp-abort=' + hc_settings.gpu_temp_abort.to_s if hc_settings.gpu_temp_abort.to_s != '0'
