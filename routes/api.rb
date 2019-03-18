@@ -404,7 +404,7 @@ post '/v1/agents/:uuid/heartbeat' do
                     crack_command = jobtask_queue_entry.command
                     # Do we care if the mode is dictionary or mask, or do we do it all?
 
-                    if task.hc_attackmode != 'maskmode'
+                    if !wordlist.mask_file
                       crack_command += ' -s ' + jobtask_queue_entry.keyspace_pos.to_i.to_s
                       crack_command += ' -l ' + speed.to_i.to_s
                     end
@@ -459,7 +459,7 @@ post '/v1/agents/:uuid/heartbeat' do
                 jobtask_queue_entry.keyspace_pos = 0
                 jobtask_queue_entry.save
 
-                if jobtask_queue_entry.keyspace_pos.to_i < task.keyspace.to_i
+                if jobtask_queue_entry.keyspace_pos.to_i < task.keyspace.to_i && !wordlist.mask_file
                   crack_command += ' -s 0 -l ' + speed.to_i.to_s
 
                   # Update pos
