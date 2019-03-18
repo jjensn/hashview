@@ -38,6 +38,10 @@
                     - @hashtypes.each do |type|
                       %option{value: "#{type}", name: 'hashtype', type: 'button'} #{modeToFriendly(type)}
                     %option{value: '99999', name: 'hashtype', type: 'button'} Other
+              .form-group
+                %label.control-label.col-xs-2{for: ''} Use --hex-salt argument
+                .col-xs-1
+                  %input.checkbox.pull-left{type: 'checkbox', name: 'hexed_salt', id: 'hexed_salt'}
                   %input{type: 'hidden', name: 'hashid', value: "#{params[:hashid].to_s}"}
                   %input{type: 'hidden', name: 'filetype', value: "#{params[:filetype].to_s}"}
                   %input{type: 'hidden', name: 'job_id', value: "#{params[:job_id].to_s}"}

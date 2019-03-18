@@ -12,11 +12,12 @@ end
 #   myreturnid = @hashfilehashes.insert_ignore.multi_insert(hashfilehasharray, :return=>:id)
 # end
 
-def addHash(hash, hashtype)
+def addHash(hash, hashtype, hexed_salt)
   entry = Hashes.new
   entry[:originalhash] = hash
   entry[:hashtype] = hashtype
   entry[:cracked] = false
+  entry[:hexed_salt] = hexed_salt
   entry.save
 end
 
@@ -129,14 +130,15 @@ def importUserHash(user_hash, hashfile_id, type)
   updateHashfileHashes(@hash_id[:id].to_i, data[0], hashfile_id)
 end
 
-def importHashSalt(hash, hashfile_id, type)
+def importHashSalt(hash, hashfile_id, type, hexed_salt)
   @hash_id = Hashes.first(originalhash: hash, hashtype: type)
   if @hash_id.nil?
-    addHash(hash, type)
+    addHash(hash, type, hexed_salt)
     @hash_id = Hashes.first(originalhash: hash, hashtype: type)
   elsif @hash_id && @hash_id.hashtype.to_s != type.to_s
     unless @hash_id.cracked
       @hash_id.hashtype = type.to_i
+      @hash_id.hexed_salt = hexed_salt
       @hash_id.save
     end
   end
@@ -144,15 +146,16 @@ def importHashSalt(hash, hashfile_id, type)
   updateHashfileHashes(@hash_id.id.to_i, 'null', hashfile_id)
 end
 
-def importUserHashSalt(hash, hashfile_id, type)
+def importUserHashSalt(hash, hashfile_id, type, hexed_salt)
   data = hash.split(':', 2)
   @hash_id = Hashes.first(originalhash: data[1], hashtype: type)
   if @hash_id.nil?
-    addHash(hash, type)
+    addHash(hash, type, hexed_salt)
     @hash_id = Hashes.first(originalhash: data[1], hashtype: type)
   elsif @hash_id && @hash_id.hashtype.to_s != type.to_s
     unless @hash_id.cracked
       @hash_id.hashtype = type.to_i
+      @hash_id.hexed_salt = hexed_salt
       @hash_id.save
     end
   end
@@ -477,7 +480,7 @@ def friendlyToMode(friendly)
   '99999'
 end
 
-def importHash(hash, file_type, hashfile_id, hashtype)
+def importHash(hash, file_type, hashfile_id, hashtype, hexed_salt)
   if file_type == 'pwdump' or file_type == 'smart hashdump'
     importPwdump(hash, hashfile_id, hashtype) # because the format is the same aside from the trailing ::
   elsif file_type == 'shadow'
@@ -489,9 +492,9 @@ def importHash(hash, file_type, hashfile_id, hashtype)
   elsif file_type == 'user_hash'
     importUserHash(hash, hashfile_id, hashtype)
   elsif file_type == 'hash_salt'
-    importHashSalt(hash, hashfile_id, hashtype)
+    importHashSalt(hash, hashfile_id, hashtype, hexed_salt)
   elsif file_type == 'user_hash_salt'
-    importUserHashSalt(hash, hashfile_id, hashtype)
+    importUserHashSalt(hash, hashfile_id, hashtype, hexed_salt)
   elsif file_type == 'NetNTLMv1'
     importNetNTLMv1(hash, hashfile_id, hashtype)
   elsif file_type == 'NetNTLMv2'

@@ -241,7 +241,10 @@ post '/customers/upload/verify_hashtype' do
   varWash(params)
 
   filetype = params[:filetype]
+
   hashfile = Hashfiles.first(id: params[:hashid])
+
+  params[:hexed_salt] == 'on' ? hexed_salt = '1' : hexed_salt = '0'
 
   params[:hashtype] == '99999' ? hashtype = params[:manualHash] : hashtype = params[:hashtype]
 
@@ -250,7 +253,7 @@ post '/customers/upload/verify_hashtype' do
   File.open(hash_file, 'r').each do |line|
     line = line.gsub(/\r\n/, '')
     line = line.gsub(/\n/, '')
-    unless importHash(line, filetype, hashfile.id, hashtype)
+    unless importHash(line, filetype, hashfile.id, hashtype, hexed_salt)
       flash[:error] = 'Error importing hashes'
       redirect to("/customers/upload/verify_hashtype?customer_id=#{params[:customer_id]}&job_id=#{params[:job_id]}&hashid=#{params[:hashid]}&filetype=#{params[:filetype]}")
     end

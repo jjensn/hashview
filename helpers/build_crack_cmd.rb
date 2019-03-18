@@ -15,6 +15,7 @@ helpers do
     hashfile_id = @job.hashfile_id
     hash_id = Hashfilehashes.first(hashfile_id: hashfile_id).hash_id
     hashtype = Hashes.first(id: hash_id).hashtype.to_s
+    hexed_salt = Hashes.first(id: hash_id).hexed_salt
 
     attackmode = @task.hc_attackmode.to_s
     mask = @task.hc_mask
@@ -64,9 +65,10 @@ helpers do
     cmd += ' --workload-profile ' + hc_settings.workload_profile.to_s if hc_settings.workload_profile.to_s != '0'
 
     # --gpu-temp-disable
-    #cmd += ' --gpu-temp-disable' if hc_settings.gpu_temp_disable
-    #temp workaround
-    cmd += ' --hex-salt ' if hc_settings.gpu_temp_disable
+    cmd += ' --gpu-temp-disable' if hc_settings.gpu_temp_disable
+    
+    # --hex-salt
+    cmd += ' --hex-salt ' if hexed_salt == '1'
 
     # --gpu-temp-abort
     cmd += ' --gpu-temp-abort=' + hc_settings.gpu_temp_abort.to_s if hc_settings.gpu_temp_abort.to_s != '0'

@@ -58,3 +58,9 @@ logs/jobs/*
 *.restore
 *.idea
 dump.rdb
+bundle/
+entrypoint.sh
+Dockerfile
+docker-compose.yml
+.vscode/
+hashcat/
