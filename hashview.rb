@@ -6,6 +6,7 @@ require 'resque'
 require 'resque/server'
 require 'logger'
 require 'rack/protection'
+require "sinatra/reloader" if development?
 
 require_relative 'models/master'
 require_relative 'helpers/init'

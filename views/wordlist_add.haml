@@ -17,6 +17,10 @@
                 .col-xs-10
                   %input{type: 'file', name: 'file', class: 'inputFiles_cust'}
               .form-group
+                %label.control-label.col-xs-2{for: ''} Contains Hashcat Masks
+                .col-xs-1
+                  %input.checkbox.pull-left{type: 'checkbox', name: 'masks_file', id: 'masks_file'}
+              .form-group
                 .col-xs-offset-2.col-xs-10
                   %br
                   %button.btn.btn-primary{type: 'submit'} Upload

@@ -33,6 +33,7 @@ module WordlistImporter
           wordlist.name = name
           wordlist.path = path_file
           wordlist.size = 0
+          name.match(/\.hcmask/) ? wordlist.mask_file = '1' : wordlist.mask_file = '0'
           wordlist.checksum = nil
           wordlist.save
         end

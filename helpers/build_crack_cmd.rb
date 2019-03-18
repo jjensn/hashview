@@ -46,10 +46,14 @@ helpers do
     when 'maskmode'
       cmd = hc_binpath + ' --session ' + session.to_s + ' -m ' + hashtype + ' --potfile-disable' + ' --status --status-timer=15' + ' --outfile-format 5 ' + ' --outfile ' + crack_file + ' ' + ' -a 3 ' + target_file + ' ' + mask
     when 'dictionary'
-      if @task.hc_rule.nil? || @task.hc_rule == 'none'
-        cmd = hc_binpath + ' --session ' + session.to_s + ' -m ' + hashtype + ' --potfile-disable' + ' --status --status-timer=15' + ' --outfile-format 5 ' + ' --outfile ' + crack_file + ' ' + target_file + ' ' + wordlist.path
+      if wordlist.mask_file == '1'
+        cmd = hc_binpath + ' --session ' + session.to_s + ' -m ' + hashtype + ' --potfile-disable' + ' --status --status-timer=15' + ' --outfile-format 5 ' + ' --outfile ' + crack_file + ' ' + ' -a 3 ' + target_file + ' ' + wordlist.path
       else
-        cmd = hc_binpath + ' --session ' + session.to_s + ' -m ' + hashtype + ' --potfile-disable' + ' --status --status-timer=15' + ' --outfile-format 5 ' + ' --outfile ' + crack_file + ' ' + ' -r ' + rules_file.path + ' ' + target_file + ' ' + wordlist.path
+        if @task.hc_rule.nil? || @task.hc_rule == 'none'
+          cmd = hc_binpath + ' --session ' + session.to_s + ' -m ' + hashtype + ' --potfile-disable' + ' --status --status-timer=15' + ' --outfile-format 5 ' + ' --outfile ' + crack_file + ' ' + target_file + ' ' + wordlist.path
+        else
+          cmd = hc_binpath + ' --session ' + session.to_s + ' -m ' + hashtype + ' --potfile-disable' + ' --status --status-timer=15' + ' --outfile-format 5 ' + ' --outfile ' + crack_file + ' ' + ' -r ' + rules_file.path + ' ' + target_file + ' ' + wordlist.path
+        end
       end
     when 'combinator'
       cmd = hc_binpath + ' --session ' + session.to_s + ' -m ' + hashtype + ' --potfile-disable' + ' --status --status-timer=15' + ' --outfile-format 5 ' + ' --outfile ' + crack_file + ' ' + ' -a 1 ' + target_file + ' ' + wordlist_one.path + ' ' + ' ' + wordlist_two.path + ' ' + @task.hc_rule.to_s

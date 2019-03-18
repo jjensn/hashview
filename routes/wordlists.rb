@@ -54,6 +54,7 @@ post '/wordlists/upload/' do
   # Replace white space with underscore.  We need more filtering here too
   upload_name = params[:name]
   upload_name = upload_name.downcase.tr(' ', '_')
+  params[:masks_file] == 'on' ? masks_file = '1' : masks_file = '0'
 
   # Change to date/time ?
   rand_str = rand(36**36).to_s(36)
@@ -67,6 +68,7 @@ post '/wordlists/upload/' do
   wordlist.path = file_name
   wordlist.size = 0
   wordlist.checksum = nil
+  wordlist.mask_file = masks_file
   wordlist.lastupdated = Time.now
   wordlist.save
 
