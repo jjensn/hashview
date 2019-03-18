@@ -46,7 +46,7 @@ helpers do
     when 'maskmode'
       cmd = hc_binpath + ' --session ' + session.to_s + ' -m ' + hashtype + ' --potfile-disable' + ' --status --status-timer=15' + ' --outfile-format 5 ' + ' --outfile ' + crack_file + ' ' + ' -a 3 ' + target_file + ' ' + mask
     when 'dictionary'
-      if wordlist.mask_file == '1'
+      if wordlist.mask_file
         cmd = hc_binpath + ' --session ' + session.to_s + ' -m ' + hashtype + ' --potfile-disable' + ' --status --status-timer=15' + ' --outfile-format 5 ' + ' --outfile ' + crack_file + ' ' + ' -a 3 ' + target_file + ' ' + wordlist.path
       else
         if @task.hc_rule.nil? || @task.hc_rule == 'none'
@@ -72,7 +72,7 @@ helpers do
     cmd += ' --gpu-temp-disable' if hc_settings.gpu_temp_disable
     
     # --hex-salt
-    cmd += ' --hex-salt ' if hexed_salt == '1'
+    cmd += ' --hex-salt ' if hexed_salt
 
     # --gpu-temp-abort
     cmd += ' --gpu-temp-abort=' + hc_settings.gpu_temp_abort.to_s if hc_settings.gpu_temp_abort.to_s != '0'
