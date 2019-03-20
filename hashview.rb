@@ -54,6 +54,6 @@ Rack::Utils.key_space_limit = 68719476736
 # Quick check to see if there are any new wordlists
 Resque.enqueue(WordlistImporter)
 Resque.enqueue(WordlistChecksum)
-
+Resque.enqueue(MasklistImporter)
 # start our local agent
 Resque.enqueue(LocalAgent)

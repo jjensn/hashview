@@ -165,6 +165,11 @@ class Wordlists < Sequel::Model(:wordlists)
 
 end
 
+# Masks
+class Masks < Sequel::Model(:masks)
+
+end
+
 # Rules Class
 class Rules < Sequel::Model(:rules)
 

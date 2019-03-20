@@ -8,32 +8,32 @@ def isDevelopment?
 end
 
 def isOldVersion?
-
+  return false
   # Check to see what version the app is at
-  application_version = File.open('VERSION') {|f| f.readline}
-  puts 'APPLICATION VERSION: ' + application_version.to_s
-  # application_version = application_version.to_i
+  # application_version = File.open('VERSION') {|f| f.readline}
+  # puts 'APPLICATION VERSION: ' + application_version.to_s
+  # # application_version = application_version.to_i
 
-  # Check for v0.5.1
-  # Note this version does not have a versions column. Going forward we will check that value
-  has_version_column = false
-  if Settings.columns.include?(:version)
-    has_version_column = true
-  end
+  # # Check for v0.5.1
+  # # Note this version does not have a versions column. Going forward we will check that value
+  # has_version_column = false
+  # if Settings.columns.include?(:version)
+  #   has_version_column = true
+  # end
 
-  if has_version_column
-    @settings = Settings.first
-    db_version = @settings.version
-    puts 'DB:VERSION ' + db_version.to_s
-    if Gem::Version.new(db_version) < Gem::Version.new(application_version)
-      return true
-    else
-      return false
-    end
-  else
-    puts 'No version column found. Assuming Version 0.5.1'
-    true
-  end
+  # if has_version_column
+  #   @settings = Settings.first
+  #   db_version = @settings.version
+  #   puts 'DB:VERSION ' + db_version.to_s
+  #   if Gem::Version.new(db_version) < Gem::Version.new(application_version)
+  #     return true
+  #   else
+  #     return false
+  #   end
+  # else
+  #   puts 'No version column found. Assuming Version 0.5.1'
+  #   true
+  # end
 end
 
 def updateTaskqueueStatus(taskqueue_id, status, agent_id)

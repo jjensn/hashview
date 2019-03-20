@@ -78,6 +78,7 @@
                     {
                       document.getElementById('dictionary_div').style.display = 'inline';
                       document.getElementById('maskmode_div').style.display = 'none';
+                      document.getElementById('maskfilemode_div').style.display = 'none';
                       document.getElementById('bruteforce_div').style.display = 'none';
                       document.getElementById('combinator_div').style.display = 'none';
                     }
@@ -85,6 +86,15 @@
                     {
                       document.getElementById('dictionary_div').style.display = 'none';
                       document.getElementById('maskmode_div').style.display = 'inline';
+                      document.getElementById('maskfilemode_div').style.display = 'none';
+                      document.getElementById('bruteforce_div').style.display = 'none';
+                      document.getElementById('combinator_div').style.display = 'none';
+                    }
+                    else if(Index == "maskfilemode")
+                    {
+                      document.getElementById('dictionary_div').style.display = 'none';
+                      document.getElementById('maskmode_div').style.display = 'none';
+                      document.getElementById('maskfilemode_div').style.display = 'inline';
                       document.getElementById('bruteforce_div').style.display = 'none';
                       document.getElementById('combinator_div').style.display = 'none';
                     }
@@ -92,6 +102,7 @@
                     {
                       document.getElementById('dictionary_div').style.display = 'none';
                       document.getElementById('maskmode_div').style.display = 'none';
+                      document.getElementById('maskfilemode_div').style.display = 'none';
                       document.getElementById('bruteforce_div').style.display = 'inline';
                       document.getElementById('combinator_div').style.display = 'none';
                     }
@@ -99,6 +110,7 @@
                     {
                       document.getElementById('dictionary_div').style.display = 'none';
                       document.getElementById('maskmode_div').style.display = 'none';
+                      document.getElementById('maskfilemode_div').style.display = 'none';
                       document.getElementById('bruteforce_div').style.display = 'none';
                       document.getElementById('combinator_div').style.display = 'inline';
                     }
@@ -106,6 +118,7 @@
                     {
                       document.getElementById('bruteforce_div').style.display = 'none';
                       document.getElementById('maskmode_div').style.display = 'none';
+                      document.getElementById('maskfilemode_div').style.display = 'none';
                       document.getElementById('bruteforce_div').style.display = 'none';
                       document.getElementById('combinator_div').style.display = 'none';
                     }
@@ -122,6 +135,7 @@
                       %option{value: '', name: 'attackmode', type: 'button'} Select a Mode
                       %option{value: 'dictionary', name: 'attackmode', type: 'button'} Dictionary
                       %option{value: 'maskmode', name: 'attackmode', type: 'button'} Mask Mode
+                      %option{value: 'maskfilemode', name: 'attackmode', type: 'button'} Mask File Mode
                       %option{value: 'combinator', name: 'combinator', type: 'button'} Combinator
                       %option{value: 'bruteforce', name: 'attackmode', type: 'button'} Brute Force
                 .section
@@ -150,6 +164,17 @@
                           <input class='form-control' id='mask' name='mask' type='textbox' placeholder='i.e. ?l?u?u?u' >
                       .form-group
                         .col-xs-offset-2.col-xs-10
+                          %button.btn.btn-primary{type: 'submit'} Create & Assign
+                    #maskfilemode_div{style: 'display:none'}
+                      .form-group
+                        %label.control-label.col-xs-2{for: ''} Hashcat Mask File
+                        .col-xs-4
+                          %select.form-control{name: 'maskfile'}
+                            - @maskfiles.each do |maskfile|
+                              %option{value: "#{maskfile.id}", name: 'ml_id', type: 'button'} #{maskfile.name} (#{maskfile.size} masks)
+                      .form-group
+                        .col-xs-offset-2.col-xs-10
+                          %input{type: 'hidden', name: 'group_id', value: "#{params[:id]}"}
                           %button.btn.btn-primary{type: 'submit'} Create & Assign
                     #combinator_div{style: 'display:none'}
                       .form-group

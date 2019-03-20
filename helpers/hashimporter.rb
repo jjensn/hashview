@@ -29,7 +29,7 @@ def updateHashfileHashes(hash_id, username, hashfile_id)
   entry.save
 end
 
-def importPwdump(hash, hashfile_id, type)
+def importPwdump(hash, hashfile_id, type, hexed_salt)
   data = hash.split(':')
   return true if machineAcct?(data[0])
   return true if data[2].nil?
@@ -44,7 +44,7 @@ def importPwdump(hash, hashfile_id, type)
 
     @hash_id = Hashes.first(originalhash: lm_hash_0, hashtype: type)
     if @hash_id.nil?
-      addHash(lm_hash_0, type)
+      addHash(lm_hash_0, type, hexed_salt)
       @hash_id = Hashes.first(originalhash: lm_hash_0, hashtype: type)
     elsif @hash_id && @hash_id.hashtype.to_s != type.to_s
       unless @hash_id.cracked
@@ -57,7 +57,7 @@ def importPwdump(hash, hashfile_id, type)
 
     @hash_id = Hashes.first(originalhash: lm_hash_1, hashtype: type)
     if @hash_id.nil?
-      addHash(lm_hash_1, type)
+      addHash(lm_hash_1, type, hexed_salt)
       @hash_id = Hashes.first(originalhash: lm_hash_1, hashtype: type)
     elsif @hash_id && @hash_id.hashtype.to_s != type.to_s
       unless @hash_id.cracked
@@ -73,7 +73,7 @@ def importPwdump(hash, hashfile_id, type)
   if type == '1000'
     @hash_id = Hashes.first(originalhash: data[3], hashtype: type)
     if @hash_id.nil?
-      addHash(data[3], type)
+      addHash(data[3], type, hexed_salt)
       @hash_id = Hashes.first(originalhash: data[3], hashtype: type)
     elsif @hash_id && @hash_id.hashtype.to_s != type.to_s
       unless @hash_id.cracked
@@ -94,7 +94,7 @@ def importShadow(hash, hashfile_id, type)
   importUserHash(hash, hashfile_id, type)
 end
 
-def importDsusers(hash, hashfile_id, type)
+def importDsusers(hash, hashfile_id, type, hexed_salt)
   data = hash.split(':')
   if data[1] =~ /NT/
     data[1] = data[1].to_s.split('$')[2]
@@ -103,7 +103,7 @@ def importDsusers(hash, hashfile_id, type)
 
   @hash_id = Hashes.first(originalhash: data[1], hashtype: type)
   if @hash_id.nil?
-    addHash(data[1], type)
+    addHash(data[1], type, hexed_salt)
     @hash_id = Hashes.first(originalhash: data[1], hashtype: type)
   elsif @hash_id && @hash_id.hashtype.to_s != type.to_s
     unless @hash_id.cracked
@@ -114,11 +114,11 @@ def importDsusers(hash, hashfile_id, type)
   updateHashfileHashes(@hash_id.id.to_i, data[0], hashfile_id)
 end
 
-def importUserHash(user_hash, hashfile_id, type)
+def importUserHash(user_hash, hashfile_id, type, hexed_salt)
   data = user_hash.split(':')
   @hash_id = Hashes.first(originalhash: data[1], hashtype: type)
   if @hash_id.nil?
-    addHash(data[1], type)
+    addHash(data[1], type, hexed_salt)
     @hash_id = Hashes.first(originalhash: data[1], hashtype: type)
   elsif @hash_id && @hash_id[:hashtype].to_s != type.to_s
     unless @hash_id[:cracked]
@@ -163,13 +163,13 @@ def importUserHashSalt(hash, hashfile_id, type, hexed_salt)
   updateHashfileHashes(@hash_id.id.to_i, data[0], hashfile_id)
 end
 
-def importNetNTLMv1(hash, hashfile_id, type)
+def importNetNTLMv1(hash, hashfile_id, type, hexed_salt)
   data = hash.split(':')
   originalhash = data[3].to_s.downcase + ':' + data[4].to_s.downcase + ':' + data[5].to_s.downcase
 
   @hash_id = Hashes.first(originalhash: originalhash, hashtype: type)
   if @hash_id.nil?
-    addHash(originalhash, type)
+    addHash(originalhash, type, hexed_salt)
     @hash_id = Hashes.first(originalhash: originalhash, hashtype: type)
   elsif @hash_id && @hash_id.hashtype.to_s != type.to_s
     unless @hash_id.cracked
@@ -181,12 +181,12 @@ def importNetNTLMv1(hash, hashfile_id, type)
   updateHashfileHashes(@hash_id.id.to_i, data[0], hashfile_id)
 end
 
-def importNetNTLMv2(hash, hashfile_id, type)
+def importNetNTLMv2(hash, hashfile_id, type, hexed_salt)
   data = hash.split(':')
 
   @hash_id = Hashes.first(originalhash: hash, hashtype: type)
   if @hash_id.nil?
-    addHash(hash, type)
+    addHash(hash, type, hexed_salt)
     @hash_id = Hashes.first(originalhash: hash, hashtype: type)
   elsif @hash_id && @hash_id.hashtype.to_s != type.to_s
     unless @hash_id.cracked
@@ -198,7 +198,7 @@ def importNetNTLMv2(hash, hashfile_id, type)
   updateHashfileHashes(@hash_id.id.to_i, data[0], hashfile_id)
 end
 
-def importHashOnly(hash, hashfile_id, type)
+def importHashOnly(hash, hashfile_id, type, hexed_salt)
   if type == '3000'
     # import LM
     lm_hashes = hash.scan(/.{16}/)
@@ -207,7 +207,7 @@ def importHashOnly(hash, hashfile_id, type)
 
     @hash_id = Hashes.first(originalhash: lm_hash_0, hashtype: type)
     if @hash_id.nil?
-      addHash(lm_hash_0, type)
+      addHash(lm_hash_0, type, hexed_salt)
       @hash_id = Hashes.first(originalhash: lm_hash_0, hashtype: type)
     elsif @hash_id && @hash_id.hashtype.to_s != type.to_s
       unless @hash_id.cracked
@@ -220,7 +220,7 @@ def importHashOnly(hash, hashfile_id, type)
 
     @hash_id = Hashes.first(originalhash: lm_hash_1, hashtype: type)
     if @hash_id.nil?
-      addHash(lm_hash_1, type)
+      addHash(lm_hash_1, type, hexed_salt)
       @hash_id = Hashes.first(originalhash: lm_hash_1, hashtype: '3000')
     elsif @hash_id && @hash_id.hashtype.to_s != type.to_s
       unless @hash_id.cracked
@@ -233,7 +233,7 @@ def importHashOnly(hash, hashfile_id, type)
   else
     @hash_id = Hashes.first(originalhash: hash)
     if @hash_id.nil?
-      addHash(hash, type)
+      addHash(hash, type, hexed_salt)
       @hash_id = Hashes.first(originalhash: hash, hashtype: type)
     elsif @hash_id && @hash_id.hashtype.to_s != type.to_s
       unless @hash_id.cracked
@@ -482,23 +482,23 @@ end
 
 def importHash(hash, file_type, hashfile_id, hashtype, hexed_salt)
   if file_type == 'pwdump' or file_type == 'smart hashdump'
-    importPwdump(hash, hashfile_id, hashtype) # because the format is the same aside from the trailing ::
+    importPwdump(hash, hashfile_id, hashtype, hexed_salt) # because the format is the same aside from the trailing ::
   elsif file_type == 'shadow'
-    importShadow(hash, hashfile_id, hashtype)
+    importShadow(hash, hashfile_id, hashtype, hexed_salt)
   elsif file_type == 'hash_only'
-    importHashOnly(hash, hashfile_id, hashtype)
+    importHashOnly(hash, hashfile_id, hashtype, hexed_salt)
   elsif file_type == 'dsusers'
-    importDsusers(hash, hashfile_id, hashtype)
+    importDsusers(hash, hashfile_id, hashtype, hexed_salt)
   elsif file_type == 'user_hash'
-    importUserHash(hash, hashfile_id, hashtype)
+    importUserHash(hash, hashfile_id, hashtype, hexed_salt)
   elsif file_type == 'hash_salt'
     importHashSalt(hash, hashfile_id, hashtype, hexed_salt)
   elsif file_type == 'user_hash_salt'
     importUserHashSalt(hash, hashfile_id, hashtype, hexed_salt)
   elsif file_type == 'NetNTLMv1'
-    importNetNTLMv1(hash, hashfile_id, hashtype)
+    importNetNTLMv1(hash, hashfile_id, hashtype, hexed_salt)
   elsif file_type == 'NetNTLMv2'
-    importNetNTLMv2(hash, hashfile_id, hashtype)
+    importNetNTLMv2(hash, hashfile_id, hashtype, hexed_salt)
   else
     return 'Unsupported hash format detected'
   end

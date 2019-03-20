@@ -40,13 +40,13 @@
                     %option{value: '99999', name: 'hashtype', type: 'button'} Other
               .form-group
                 %label.control-label.col-xs-2{for: ''} Use --hex-salt argument
-                .col-xs-1
+                .col-xs-3
                   %input.checkbox.pull-left{type: 'checkbox', name: 'hexed_salt', id: 'hexed_salt'}
                   %input{type: 'hidden', name: 'hashid', value: "#{params[:hashid].to_s}"}
                   %input{type: 'hidden', name: 'filetype', value: "#{params[:filetype].to_s}"}
                   %input{type: 'hidden', name: 'job_id', value: "#{params[:job_id].to_s}"}
                   %input{type: 'hidden', name: 'customer_id', value: "#{params[:customer_id].to_s}"}
-
+              .form-group
                 .section
                   %div{class: "label_leftalign field"}
                     - if @hashtypes.size == 0

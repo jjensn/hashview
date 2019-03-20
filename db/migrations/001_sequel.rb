@@ -165,7 +165,7 @@ Sequel.migration do
     create_table(:task_groups) do
       primary_key :id, type: :Bignum
       String :name, size: 255
-      String :tasks, size: 1024
+      longblob :tasks
     end
 
     create_table(:users) do

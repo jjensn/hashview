@@ -1,7 +1,6 @@
 get '/task_groups/list' do
   @task_groups = TaskGroups.all
-  @tasks = Tasks.all
-
+  @tasks = Tasks.where(:visible).all
   haml :task_group_list
 end
 
@@ -17,8 +16,7 @@ end
 get '/task_groups/create' do
   varWash(params)
 
-  @tasks = Tasks.all
-
+  @tasks = Tasks.where(:visible).all
   haml :task_group_edit
 end
 
@@ -49,6 +47,7 @@ end
 
 get '/task_groups/assign_tasks' do
   varWash(params)
+  @maskfiles = Masks.all
 
   @task_group = TaskGroups.first(id: params[:id])
   @task_group_tasks = []
@@ -69,7 +68,7 @@ get '/task_groups/assign_tasks' do
   @wordlists = Wordlists.all
   @hc_settings = HashcatSettings.first
   @rules = Rules.all
-  @tasks = Tasks.all
+  @tasks = Tasks.where(:visible).all
   @available_tasks = []
   # Im sure there's a better way to do this
   @tasks.each do |task|

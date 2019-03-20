@@ -1,0 +1,63 @@
+!!!
+%html
+  %body
+    .span15
+      .container
+        .col-md-12
+          .row
+            .page-header
+              %h1
+                Saved Masks
+            .row
+              .col-md-10.pull-left
+                You can upload more by clicking the 'Upload Masks' button to the left or by dropping the files to /[install path]/control/masks/.
+              .col-md-2.pull-right
+                %a.btn.btn-primary.pull-right{href: '/masks/add'}
+                  Upload Masks
+      %br
+      .container
+        .row
+          .col-md-12
+            .table
+              %table{class: 'table table-striped'}
+                %thead
+                  %tr
+                    %th
+                      %b Name
+                    %th
+                      %b Path
+                    %th
+                      %b Action
+                %tbody
+                  - if @static_masks
+                    - @static_masks.each do |mask|
+                      %tr
+                        %td #{mask.name}
+                        %td #{mask.path}
+                        %td
+                          %a.btn.btn-info{href: "#modal-mask-#{mask.id}-info", "data-toggle" => 'modal'}
+                            %i.glyphicon.glyphicon-info-sign{title: 'Info'}
+                          .modal.fade.modal{id: "modal-mask-#{mask.id}-info", role: 'dialog', tabindex: '-1', "aria-hidden" => 'true'}
+                            .modal-dialog.modal-lg
+                              .modal-content
+                                .modal-header
+                                  %button.close{'aria-label' => 'Close', 'data-dismiss' => 'modal', type: 'button'}
+                                    %span{'aria-hidden' => 'true'} &times;
+                                  %h4.modal-title Details for #{mask.name}
+                                .modal-body
+                                  %p
+                                    The following tasks are using this mask.
+                                  .table
+                                    %table{class: 'table table-striped'}
+                                      - if @tasks
+                                        - @tasks.each do |task|
+                                          - if task.wl_id.to_i == mask.id.to_i
+                                            %tr
+                                              %td #{task.name}
+                                      - else
+                                        No task is using this mask
+                                  %p
+                                .modal-footer
+                                  %button.btn.btn-default{"data-dismiss" => "modal", type: 'button'} Close
+                          %a.btn.btn-danger{href: "/masks/delete/#{mask.id}"}
+                            %i.glyphicon.glyphicon-trash{title: 'Delete'}

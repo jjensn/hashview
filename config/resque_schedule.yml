@@ -25,6 +25,12 @@ do_rulelist_importer:
   queue: management
   description: "This job automatically imports rule files if placed in controls/rules dir"
 
+do_masklist_importer:
+  every: 60s
+  class: "MasklistImporter"
+  queue: management
+  description: "This job automatically imports mask files if placed in controls/masks dir"
+  
 # schedule for cleanup task
 do_cleanUp:
   every: 1d

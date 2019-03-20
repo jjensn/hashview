@@ -322,17 +322,17 @@ namespace :db do
     user, password, host = config['user'], config['password'], config['host']
     database = config['database']
 
-    agent_config = {}
-    agent_config['ip'] = '127.0.0.1'
-    agent_config['port'] = '4567'
-    agent_config['uuid'] = SecureRandom.uuid.to_s
-    agent_config['hc_binary_path'] = ''
-    agent_config['hc_pre_cmd'] = ''
-    agent_config['hc_post_cmd'] = ''
-    agent_config['type'] = 'master'
-    File.open('config/agent_config.json', 'w') do |f|
-      f.write(JSON.pretty_generate(agent_config))
-    end
+    # agent_config = {}
+    # agent_config['ip'] = '127.0.0.1'
+    # agent_config['port'] = '4567'
+    # agent_config['uuid'] = SecureRandom.uuid.to_s
+    # agent_config['hc_binary_path'] = ''
+    # agent_config['hc_pre_cmd'] = ''
+    # agent_config['hc_post_cmd'] = ''
+    # agent_config['type'] = 'master'
+    # # File.open('config/agent_config.json', 'w') do |f|
+    # #   f.write(JSON.pretty_generate(agent_config))
+    # # end
 
     puts '[*] Setting up local agent'
     query = [

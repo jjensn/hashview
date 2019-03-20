@@ -1,5 +1,5 @@
 get '/tasks/list' do
-  @tasks = Tasks.all
+  @tasks = Tasks.where(:visible).all
   @wordlists = Wordlists.all
   @rules = Rules.all
   @jobtasks = Jobtasks.all
@@ -155,6 +155,13 @@ post '/tasks/create' do
     end
   end
 
+  if params[:attackmode] == 'maskfilemode'
+    if !params[:maskfile] || params[:maskfile].empty?
+      flash[:error] = 'Mask field field cannot be left empty'
+      redirect to('/tasks/create')
+    end
+  end
+
   # must have two word lists
   if params[:attackmode] == 'combinator'
     wordlist_count = 0
@@ -190,31 +197,39 @@ post '/tasks/create' do
     end
   end
 
-  task = Tasks.new
-  task.name = params[:name]
+  if params[:attackmode] == 'maskfilemode'
+    maskfile = Masks.first(id: params[:maskfile])
+    Resque.enqueue(ProcessMasks, params[:name], maskfile.path, params[:group_id])
+    flash[:success] = 'Mask File Added! Please wait a few moments for it to populate...'
 
-  task.hc_attackmode = params[:attackmode]
-
-  if params[:attackmode] == 'dictionary'
-    task.wl_id = wordlist.id
-    task.hc_rule = params[:rule]
-  elsif params[:attackmode] == 'maskmode'
-    task.hc_mask = params[:mask]
-  elsif params[:attackmode] == 'combinator'
-    task.wl_id = wordlist_list
-    task.hc_rule = rule_list
-  end
-
-  # generate keyspace of new task and save to db
-  task.keyspace = getKeyspace(task)
-  task.save
-
-  flash[:success] = "Task #{task.name} successfully created."
-  if URI(request.referer).path == '/jobs/assign_tasks'
-    redirect to '/jobs/assign_task?' + URI(request.referer).query.to_s + '&task_id=' + task.id.to_s
-  elsif URI(request.referer).path == '/task_groups/assign_tasks'
-    redirect to '/task_groups/assign_task?' + URI(request.referer).query.to_s + '&task_id=' + task.id.to_s
+    redirect to '/task_groups/assign_tasks?' + URI(request.referer).query.to_s
   else
-    redirect to('/tasks/list')
+    task = Tasks.new
+    task.name = params[:name]
+    task.visible = '1'
+    task.hc_attackmode = params[:attackmode]
+
+    if params[:attackmode] == 'dictionary'
+      task.wl_id = wordlist.id
+      task.hc_rule = params[:rule]
+    elsif params[:attackmode] == 'maskmode'
+      task.hc_mask = params[:mask]
+    elsif params[:attackmode] == 'combinator'
+      task.wl_id = wordlist_list
+      task.hc_rule = rule_list
+    end
+
+      # generate keyspace of new task and save to db
+    task.keyspace = getKeyspace(task)
+    task.save
+    
+    flash[:success] = "Task successfully created."
+    if URI(request.referer).path == '/jobs/assign_tasks'
+      redirect to '/jobs/assign_task?' + URI(request.referer).query.to_s + '&task_id=' + task.id.to_s
+    elsif URI(request.referer).path == '/task_groups/assign_tasks'
+      redirect to '/task_groups/assign_task?' + URI(request.referer).query.to_s + '&task_id=' + task.id.to_s
+    else
+      redirect to('/tasks/list')
+    end
   end
 end
