@@ -373,7 +373,7 @@ post '/v1/agents/:uuid/heartbeat' do
             speed = @settings.chunk_size.to_i unless @settings.use_dynamic_chunking
 
             # if for whatever reason we dont have a value for speed set it here.
-            speed = 50000 if speed.zero?
+            speed = @settings.chunk_size.to_i
 
             # First lets see if there's any active task queue items we can help with
             @jobtask_queue = Jobtasks.where(status: 'Running').all
